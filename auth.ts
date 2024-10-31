@@ -13,15 +13,16 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       clientSecret: process.env.GITHUB_CLIENT_SECRET,
     }),
   ],
+  pages: {
+    signIn: '/login'
+  },
   callbacks: {
     async authorized({ auth }) {
-      // Logged in users are authenticated; otherwise, redirect to the login page
       return !!auth;
     },
     async redirect({ url, baseUrl }) {
-      // Redirect to the home page after successful login
-      return baseUrl; // This redirects to the home page
+      return baseUrl;
     },
   },
-  secret: process.env.AUTH_SECRET,  // Add this line to use your AUTH_SECRET
+  secret: process.env.AUTH_SECRET,
 });
