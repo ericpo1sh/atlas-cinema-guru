@@ -4,7 +4,7 @@ import { useSession, signOut } from "next-auth/react";
 import { FilmIcon, LogoutIcon } from "./svg";
 
 const Header: React.FC = () => {
-  const { data: session } = useSession(); // Access the session data
+  const { data: session } = useSession();
 
   return (
     <header className="text-white p-4 flex justify-between items-center" style={{backgroundColor: '#70e5ca', fontFamily: 'Inter'}}>
