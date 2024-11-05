@@ -1,9 +1,21 @@
 "use client";
 import { useState, useEffect } from 'react';
 
-const Filters: React.FC = () => {
+interface FiltersProps {
+  filterChange: (filters: {
+    search: string;
+    minDate: string;
+    maxDate: string;
+    genres: string[];
+  }) => void;
+}
+
+const Filters: React.FC<FiltersProps> = ({ filterChange }) => {
   const [selectedGenres, setSelectedGenres] = useState<string[]>([]);
   const [allGenres, setAllGenres] = useState<string[]>([]);
+  const [search, setSearch] = useState('');
+  const [minDate, setMinDate] = useState('');
+  const [maxDate, setMaxDate] = useState('');
 
   useEffect(() => {
     const fetchGenres = async () => {
@@ -19,6 +31,11 @@ const Filters: React.FC = () => {
     fetchGenres();
   }, []);
 
+  // Call `filterChange` whenever the filter state changes
+  useEffect(() => {
+    filterChange({ search, minDate, maxDate, genres: selectedGenres });
+  }, [search, minDate, maxDate, selectedGenres]);
+
   const toggleGenre = (genre: string) => {
     setSelectedGenres((prevSelected) =>
       prevSelected.includes(genre)
@@ -28,21 +45,40 @@ const Filters: React.FC = () => {
   };
 
   return (
-    <div className='w-full flex justify-between m-9 flex-row'>
-      {/* Input field for searching movies */}
+    <div className='flex justify-between m-9 flex-row'>
+      {/* Input for searching movies */}
       <div className='flex-col flex gap-2'>
         <p>Search</p>
-        <input className='w-full rounded-full mt-1 p-1 pl-3 placeholder-padding' type="text" placeholder='Search Movies...' style={{ backgroundColor: '#000061', outline: 'solid #1DD2AF 2px'}}/>
+        <input
+          className='w-full rounded-full mt-1 p-1 pl-3 placeholder-padding'
+          type="text"
+          placeholder='Search Movies...'
+          style={{ backgroundColor: '#000061', outline: 'solid #1DD2AF 2px' }}
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
         <div className='flex-row flex gap-2 mt-1'>
           <div className='flex-col'>
             <p>Min Year</p>
-            <input className='rounded-full mt-2 p-1 pl-3' type="text" placeholder='1990' style={{ backgroundColor: '#000061', outline: 'solid #1DD2AF 2px'}}/>
-          </div>
-          <div className='w-2'>
+            <input
+              className='rounded-full mt-2 p-1 pl-3'
+              type="text"
+              placeholder='1990'
+              style={{ backgroundColor: '#000061', outline: 'solid #1DD2AF 2px' }}
+              value={minDate}
+              onChange={(e) => setMinDate(e.target.value)}
+            />
           </div>
           <div className='flex-col'>
             <p>Max Year</p>
-            <input className='rounded-full mt-2 p-1 pl-3' type="text" placeholder='2024' style={{ backgroundColor: '#000061', outline: 'solid #1DD2AF 2px'}}/>
+            <input
+              className='rounded-full mt-2 p-1 pl-3'
+              type="text"
+              placeholder='2024'
+              style={{ backgroundColor: '#000061', outline: 'solid #1DD2AF 2px' }}
+              value={maxDate}
+              onChange={(e) => setMaxDate(e.target.value)}
+            />
           </div>
         </div>
       </div>
@@ -54,11 +90,15 @@ const Filters: React.FC = () => {
             <div
               key={genre}
               onClick={() => toggleGenre(genre)}
-              style={{outline: 'solid #1DD2AF 2px', backgroundColor: selectedGenres.includes(genre) ? '#1DD2AF' : 'transparent', color: selectedGenres.includes(genre) ? '#000061' : 'white'}}
-              className={'cursor-pointer rounded-full px-3 py-2 text-center'}>
+              style={{
+                outline: 'solid #1DD2AF 2px',
+                backgroundColor: selectedGenres.includes(genre) ? '#1DD2AF' : 'transparent',
+                color: selectedGenres.includes(genre) ? '#000061' : 'white',
+              }}
+              className='cursor-pointer rounded-full px-3 py-2 text-center'>
               {genre}
             </div>
-            ))}
+          ))}
         </div>
       </div>
     </div>
@@ -66,5 +106,3 @@ const Filters: React.FC = () => {
 };
 
 export default Filters;
-
-
