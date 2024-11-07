@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { StarOutlineIcon, TimeOutlineIcon, StarIcon, TimeIcon } from "./svg";
 
@@ -19,10 +19,13 @@ interface MoviesProps {
   toggleWatchLater?: (movieId: string) => void;
 }
 
-export const Movies: React.FC<MoviesProps> = ({ movies }) => {
+export const Movies: React.FC<MoviesProps> = ({ movies, toggleFavorite, toggleWatchLater }) => {
+  const [isLoading, setIsLoading] = useState(false);
+
   if (!movies || movies.length === 0) {
     return <p className="text-center mt-5">No movies found matching the filters.</p>;
   }
+
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-5">
