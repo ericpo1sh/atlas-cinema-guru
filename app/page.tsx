@@ -11,6 +11,8 @@ interface Movie {
   released: number;
   genre: string;
   image: string;
+  favorited?: boolean;
+  watchLater?: boolean;
 }
 
 export default function Page() {
@@ -71,11 +73,39 @@ export default function Page() {
     setCurrentPage(newPage);
   };
 
+  const toggleFavorite = (movieId: string) => {
+    setMovies((prevMovies) =>
+      prevMovies.map((movie) =>
+        movie.id === movieId ? { ...movie, favorited: !movie.favorited } : movie
+      )
+    );
+
+    setFilteredMovies((prevFilteredMovies) =>
+      prevFilteredMovies.map((movie) =>
+        movie.id === movieId ? { ...movie, favorited: !movie.favorited } : movie
+      )
+    );
+  };
+
+  const toggleWatchLater = (movieId: string) => {
+    setMovies((prevMovies) =>
+      prevMovies.map((movie) =>
+        movie.id === movieId ? { ...movie, watchLater: !movie.watchLater } : movie
+      )
+    );
+
+    setFilteredMovies((prevFilteredMovies) =>
+      prevFilteredMovies.map((movie) =>
+        movie.id === movieId ? { ...movie, watchLater: !movie.watchLater } : movie
+      )
+    );
+  };
+
   return (
     <div className="flex h-full w-full text-white" style={{ backgroundColor: '#00003c' }}>
       <div className="flex-col w-full">
         <Filters filterChange={handleFilterChange} />
-        <Movies movies={filteredMovies.slice((currentPage - 1) * moviesPerPage, currentPage * moviesPerPage)} />
+        <Movies movies={filteredMovies.slice((currentPage - 1) * moviesPerPage, currentPage * moviesPerPage)} toggleFavorite={toggleFavorite} toggleWatchLater={toggleWatchLater}/>
         {!loading && filteredMovies.length > 0 && (
           <PaginationButton
             currentPage={currentPage}
