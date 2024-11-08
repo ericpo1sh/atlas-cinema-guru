@@ -28,8 +28,9 @@ const WatchLaterPage = () => {
       const data = await response.json();
 
       if (response.ok) {
+        const totalWatchLater = data.watchLater.length
         setWatchLater(data.watchLater);
-        setTotalPages(Math.ceil(data.watchLaterCount / moviesPerPage));
+        setTotalPages(Math.ceil(totalWatchLater / moviesPerPage));
       } else {
         console.error('Failed to fetch Watch Later:', data.error);
         setWatchLater([]);

@@ -1,10 +1,35 @@
 "use client";
 
 import { FolderIcon, StarIcon, TimeIcon } from "./svg";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+
+interface Activity {
+  id: string;
+  timestamp: string;
+  activity: "FAVORITED" | "WATCH_LATER";
+  title: string;
+}
 
 const Sidebar: React.FC = () => {
   const [isHovered, setIsHovered] = useState(false);
+  const [activities, setActivities] = useState<Activity[]>([]);
+
+  useEffect(() => {
+    const fetchActivities = async () => {
+      try {
+        const response = await fetch(`/api/activities`);
+        if (!response.ok) {
+          throw new Error(`API error: ${response.status}`);
+        }
+        const data = await response.json();
+        setActivities(data.activities);
+      } catch (error) {
+        console.error('Error fetching activities:', error);
+      }
+    };
+
+    fetchActivities();
+  }, []);
 
   return (
     <aside
@@ -34,9 +59,20 @@ const Sidebar: React.FC = () => {
       </nav>
       {isHovered && (
         <div className="p-4">
-          <h3 className="text-lg text-center" style={{ color: '#00003c', fontFamily: 'Inter', fontWeight: 800, background: '#70e5ca', borderRadius: 5 }}>
-            Latest Activities
-          </h3>
+          <div className="text-lg text-center p-3" style={{ background: '#70e5ca', borderRadius: 5 }}>
+            <h3 className="mb-4" style={{ color: '#00003c', fontFamily: 'Inter', fontWeight: 800 }} >Latest Activities</h3>
+            {activities.length > 0 ? (
+            <ul>
+              {activities.map((activity) => (
+                <li key={activity.id} className="mb-4" style={{ color: '#00003c', fontFamily: 'Inter'}}>
+                {new Date(activity.timestamp).toLocaleDateString('en-US')} {new Date(activity.timestamp).toLocaleTimeString('en-US')} - {activity.activity === "FAVORITED" ? "Favorited" : "Added to Watch Later"} <span className='font-bold'>{activity.title}</span>
+                </li>
+              ))}
+            </ul>
+            ) : (
+            <p className="text-blue">No recent activities</p>
+            )}
+          </div>
         </div>
       )}
     </aside>

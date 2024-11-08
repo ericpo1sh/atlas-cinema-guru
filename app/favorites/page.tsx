@@ -28,8 +28,10 @@ const page = () => {
       const data = await response.json();
       
       if (response.ok) {
+        const totalFavorites = data.favorites.length
+        console.log(totalFavorites);
         setFavorites(data.favorites);
-        setTotalPages(Math.ceil(data.favoritesCount / moviesPerPage));
+        setTotalPages(Math.ceil(totalFavorites / moviesPerPage));
       } else {
         console.error('Failed to fetch favorites:', data.error);
         setFavorites([]);
