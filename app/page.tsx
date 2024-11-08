@@ -73,32 +73,62 @@ export default function Page() {
     setCurrentPage(newPage);
   };
 
-  const toggleFavorite = (movieId: string) => {
-    setMovies((prevMovies) =>
-      prevMovies.map((movie) =>
-        movie.id === movieId ? { ...movie, favorited: !movie.favorited } : movie
-      )
-    );
-
-    setFilteredMovies((prevFilteredMovies) =>
-      prevFilteredMovies.map((movie) =>
-        movie.id === movieId ? { ...movie, favorited: !movie.favorited } : movie
-      )
-    );
+  const toggleFavorite = async (movieId: string) => {
+    try {
+      const movie = movies.find((movie) => movie.id === movieId);
+      if (!movie) return;
+  
+      const response = await fetch(`/api/favorites/${movieId}`, {
+        method: movie.favorited ? 'DELETE' : 'POST',
+      });
+  
+      if (!response.ok) {
+        throw new Error(`Failed to toggle favorite: ${response.status}`);
+      }
+  
+      setMovies((prevMovies) =>
+        prevMovies.map((movie) =>
+          movie.id === movieId ? { ...movie, favorited: !movie.favorited } : movie
+        )
+      );
+  
+      setFilteredMovies((prevFilteredMovies) =>
+        prevFilteredMovies.map((movie) =>
+          movie.id === movieId ? { ...movie, favorited: !movie.favorited } : movie
+        )
+      );
+    } catch (error) {
+      console.error('Error while toggling favorite:', error);
+    }
   };
 
-  const toggleWatchLater = (movieId: string) => {
-    setMovies((prevMovies) =>
-      prevMovies.map((movie) =>
-        movie.id === movieId ? { ...movie, watchLater: !movie.watchLater } : movie
-      )
-    );
-
-    setFilteredMovies((prevFilteredMovies) =>
-      prevFilteredMovies.map((movie) =>
-        movie.id === movieId ? { ...movie, watchLater: !movie.watchLater } : movie
-      )
-    );
+  const toggleWatchLater = async (movieId: string) => {
+    try {
+      const movie = movies.find((movie) => movie.id === movieId);
+      if (!movie) return;
+  
+      const response = await fetch(`/api/watch-later/${movieId}`, {
+        method: movie.watchLater ? 'DELETE' : 'POST',
+      });
+  
+      if (!response.ok) {
+        throw new Error(`Failed to toggle watch later: ${response.status}`);
+      }
+  
+      setMovies((prevMovies) =>
+        prevMovies.map((movie) =>
+          movie.id === movieId ? { ...movie, watchLater: !movie.watchLater } : movie
+        )
+      );
+  
+      setFilteredMovies((prevFilteredMovies) =>
+        prevFilteredMovies.map((movie) =>
+          movie.id === movieId ? { ...movie, watchLater: !movie.watchLater } : movie
+        )
+      );
+    } catch (error) {
+      console.error('Error while toggling watch later:', error);
+    }
   };
 
   return (

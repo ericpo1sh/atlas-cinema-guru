@@ -20,7 +20,7 @@ interface MoviesProps {
 
 export const Movies: React.FC<MoviesProps> = ({ movies = [], toggleFavorite, toggleWatchLater }) => {
   if (!movies || movies.length === 0) {
-    return <p className="text-center mt-5">No movies found matching the filters.</p>;
+    return <p className="text-center mt-5">No movies found.</p>;
   }
 
   return (
